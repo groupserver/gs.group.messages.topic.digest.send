@@ -84,5 +84,7 @@ def main(configFileName):
         sys.stderr.write(msg)
         sys.exit(exit_vals['communication_failure'])
 
+    sys.exit(exit_vals['success'])
+
 if __name__ == '__main__':
     main('etc/gsconfig.ini')
