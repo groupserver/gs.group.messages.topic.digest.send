@@ -1,9 +1,19 @@
 # coding=utf-8
 import os
+import sys
 from setuptools import setup, find_packages
 from version import get_version
 
 version = get_version()
+
+# The argparse library was added to core in Python 2.7
+core = ['setuptools',
+        'gs.config',  # Note: without zope-support
+        'gs.form', ]
+if sys.version_info > (2, 6):
+    requires = core
+else:
+    requires = core + ['argparse']
 
 setup(name='gs.group.messages.senddigest',
     version=version,
@@ -31,11 +41,7 @@ setup(name='gs.group.messages.senddigest',
     namespace_packages=['gs', 'gs.group', 'gs.group.messages', ],
     include_package_data=True,
     zip_safe=True,
-    install_requires=[
-        'setuptools',
-        'gs.config',
-        'gs.form',
-    ],
+    install_requires=requires,
     entry_points={
         'console_scripts': [
             'senddigest = gs.group.messages.senddigest.script:main',
