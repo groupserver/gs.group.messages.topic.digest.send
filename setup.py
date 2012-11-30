@@ -33,9 +33,8 @@ setup(name='gs.group.messages.senddigest',
     zip_safe=True,
     install_requires=[
         'setuptools',
-        'lockfile',
+        'gs.config',
         'gs.form',
-        # -*- Extra requirements: -*-
     ],
     entry_points={
         'console_scripts': [
