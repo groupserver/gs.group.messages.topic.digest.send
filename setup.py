@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 import os
 import sys
 from setuptools import setup, find_packages
@@ -22,17 +22,17 @@ setup(name='gs.group.messages.senddigest',
     long_description=open("README.txt").read() + "\n" +
                       open(os.path.join("docs", "HISTORY.txt")).read(),
     classifiers=[
-      "Development Status :: 4 - Beta",
-      "Environment :: Web Environment",
-      "Framework :: Zope2",
-      "Intended Audience :: Developers",
-      "License :: Other/Proprietary License",
-      "Natural Language :: English",
-      "Operating System :: POSIX :: Linux"
-      "Programming Language :: Python",
-      "Topic :: Software Development :: Libraries :: Python Modules",
+        'Development Status :: 5 - Production/Stable',
+        "Environment :: Web Environment",
+        "Framework :: Zope2",
+        "Intended Audience :: Developers",
+        'License :: OSI Approved :: Zope Public License',
+        "Natural Language :: English",
+        "Operating System :: POSIX :: Linux"
+        "Programming Language :: Python",
+        "Topic :: Software Development :: Libraries :: Python Modules",
       ],
-    keywords='groupserver message post topic digest',
+    keywords='groupserver message post topic digest script command send',
     author='Michael JasonSmith',
     author_email='mpj17@onlinegroups.net',
     url='http://groupserver.org/',
