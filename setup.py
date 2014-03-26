@@ -1,4 +1,17 @@
 # -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2013, 2014 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 import os
 import sys
 from setuptools import setup, find_packages
@@ -36,11 +49,11 @@ setup(name='gs.group.messages.senddigest',
     author='Michael JasonSmith',
     author_email='mpj17@onlinegroups.net',
     url='http://groupserver.org/',
-    license='other',
+    license='ZPL 2.1',
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages=['gs', 'gs.group', 'gs.group.messages', ],
     include_package_data=True,
-    zip_safe=True,
+    zip_safe=True,  # --=mpj17=-- Actually zip_safe
     install_requires=requires,
     entry_points={
         'console_scripts': [
