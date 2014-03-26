@@ -1,5 +1,19 @@
 # -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2013, 2014 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 # Standard libraries
+from __future__ import absolute_import, unicode_literals
 from argparse import ArgumentParser  # Standard in Python 2.7
 from httplib import OK as HTTP_OK
 import sys
@@ -8,7 +22,7 @@ from urlparse import urlparse
 from gs.config.config import Config, ConfigError
 from gs.form import post_multipart
 # Local libraries
-from errorvals import exit_vals
+from .errorvals import exit_vals
 
 
 class NotOk(Exception):
@@ -65,11 +79,11 @@ def send_digest(url, token):
         raise NotOk(m)
 
 
-def main(configFileName):
+def main(configFileName='etc/gsconfig.ini'):
     args = get_args(configFileName)
     try:
         token = get_token_from_config(args.instance, args.config)
-    except ConfigError, ce:
+    except ConfigError as ce:
         m = 'Error with the configuration file "{config}":\n{error}\n'
         msg = m.format(config=args.config, error=ce.message)
         sys.stderr.write(msg)
@@ -77,7 +91,7 @@ def main(configFileName):
 
     try:
         send_digest(args.url, token)
-    except NotOk, no:
+    except NotOk as no:
         m = 'Error communicating with the server while sending the digests:'\
             '\n{message}\n'
         msg = m.format(message=no)
@@ -87,4 +101,4 @@ def main(configFileName):
     sys.exit(exit_vals['success'])
 
 if __name__ == '__main__':
-    main('etc/gsconfig.ini')
+    main()
