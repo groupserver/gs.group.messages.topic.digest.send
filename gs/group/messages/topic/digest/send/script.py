@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+############################################################################
 #
 # Copyright © 2013, 2014 OnlineGroups.net and Contributors.
 # All Rights Reserved.
@@ -11,7 +11,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
 # Standard libraries
 from __future__ import absolute_import, unicode_literals
 from argparse import ArgumentParser  # Standard in Python 2.7
@@ -30,21 +30,20 @@ class NotOk(Exception):
 
 
 def get_args(configFileName):
-    p = ArgumentParser(description='Send the topic digests from GroupServer.',
-                       epilog='Usually %(prog)s is called by cron(8) once a '
-                           'day.')
+    p = ArgumentParser(
+        description='Send the topic digests from GroupServer.',
+        epilog='Usually %(prog)s is called by cron(8) once a day.')
     p.add_argument('url', metavar='url',
                    help='The URL for the GroupServer site.')
-    p.add_argument('-c', '--config', dest='config', default=configFileName,
-                   type=str,
-                   help='The name of the GroupServer configuration file '
-                       '(default "%(default)s") that contains the token that '
-                       'will be used to authenticate the script when it tries '
-                       'to send the digests.')
-    p.add_argument('-i', '--instance', dest='instance', default='default',
-                   type=str,
-                   help='The identifier of the GroupServer instance '
-                       'configuration to use (default "%(default)s").')
+    p.add_argument(
+        '-c', '--config', dest='config', default=configFileName, type=str,
+        help='The name of the GroupServer configuration file (default '
+             '"%(default)s") that contains the token that will be used to '
+             'authenticate the script when it tries to send the digests.')
+    p.add_argument(
+        '-i', '--instance', dest='instance', default='default', type=str,
+        help='The identifier of the GroupServer instance configuration to '
+             'use (default "%(default)s").')
     retval = p.parse_args()
     return retval
 
@@ -74,9 +73,9 @@ def send_digest(url, token):
     status, reason, data = post_multipart(hostname, SEND_DIGEST_URI,
                                           fields)  # port?
     if status != HTTP_OK:
-        m = '{reason} ({status} <{host}>)'.format(reason=reason, status=status,
-                                                    host=hostname)
-        raise NotOk(m)
+        m = '{reason} ({status} <{host}>)'
+        msg = m.format(reason=reason, status=status, host=hostname)
+        raise NotOk(msg)
 
 
 def main(configFileName='etc/gsconfig.ini'):
@@ -92,8 +91,8 @@ def main(configFileName='etc/gsconfig.ini'):
     try:
         send_digest(args.url, token)
     except NotOk as no:
-        m = 'Error communicating with the server while sending the digests:'\
-            '\n{message}\n'
+        m = 'Error communicating with the server while sending the '\
+            'digests:\n{message}\n'
         msg = m.format(message=no)
         sys.stderr.write(msg)
         sys.exit(exit_vals['communication_failure'])
