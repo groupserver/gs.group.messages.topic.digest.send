@@ -13,9 +13,11 @@
 #
 ############################################################################
 # Standard libraries
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 from argparse import ArgumentParser  # Standard in Python 2.7
 from httplib import OK as HTTP_OK
+from json import loads as load_json
+from operator import itemgetter
 import sys
 from urlparse import urlparse
 # GroupServer libraries
@@ -44,6 +46,10 @@ def get_args(configFileName):
         '-i', '--instance', dest='instance', default='default', type=str,
         help='The identifier of the GroupServer instance configuration to '
              'use (default "%(default)s").')
+    p.add_argument(
+        '-v', '--verbose', dest='verbose', default=False,
+        action='store_true',
+        help='Turn on verbose output (feedback). Default %(default)s.')
     retval = p.parse_args()
     return retval
 
@@ -59,17 +65,33 @@ def get_token_from_config(configSet, configFileName):
     return retval
 
 
-SEND_DIGEST_URI = '/gs-group-messages-topicsdigest-send.html'
+DIGEST_GROUPS_URI = '/gs-group-messages-topic-digest-groups.html'
 
 
-def send_digest(url, token):
-    parsedUrl = urlparse(url)
-    if not parsedUrl.hostname:
-        m = 'No host in the URL <{0}>\n'.format(url)
-        sys.stderr.write(m)
-        sys.exit(exit_vals['url_bung'])
-    hostname = parsedUrl.hostname
-    fields = {'form.actions.send': 'Send'}
+def get_digest_groups(hostname, token):
+    'Get the list of groups to send the digest to.'
+    fields = {'token': token, 'get': '', }
+    status, reason, data = post_multipart(hostname, DIGEST_GROUPS_URI,
+                                          fields)  # port?
+    if status != HTTP_OK:
+        m = '{reason} ({status} <{host}>)'
+        msg = m.format(reason=reason, status=status, host=hostname)
+        raise NotOk(msg)
+
+    retval = load_json(data)
+    retval.sort(key=itemgetter(0, 1))  # Nicer when sorted by site & group
+    return retval
+
+
+SEND_DIGEST_URI = '/gs-group-messages-topic-digest-send.html'
+
+
+def send_digest(hostname, siteId, groupId, token):
+    fields = {
+        'form.siteId': siteId,
+        'form.groupId': groupId,
+        'form.token': token,
+        'form.actions.send': 'Send'}
     status, reason, data = post_multipart(hostname, SEND_DIGEST_URI,
                                           fields)  # port?
     if status != HTTP_OK:
@@ -88,14 +110,35 @@ def main(configFileName='etc/gsconfig.ini'):
         sys.stderr.write(msg)
         sys.exit(exit_vals['config_error'])
 
+    parsedUrl = urlparse(args.url)
+    if not parsedUrl.hostname:
+        m = 'No host in the URL <{0}>\n'.format(args.url)
+        sys.stderr.write(m)
+        sys.exit(exit_vals['url_bung'])
+    hostname = parsedUrl.hostname
+
+    if args.verbose:
+        sys.stdout.write('Retrieving the list of groups\n')
     try:
-        send_digest(args.url, token)
+        groups = get_digest_groups(hostname, token)
     except NotOk as no:
-        m = 'Error communicating with the server while sending the '\
-            'digests:\n{message}\n'
+        m = 'Error communicating with the server while recieving the '\
+            'list of groups to send the digest to:\n{message}\n'
         msg = m.format(message=no)
         sys.stderr.write(msg)
         sys.exit(exit_vals['communication_failure'])
+
+    m = 'Sending digest to {0} on {1}\n'
+    for siteId, groupId in groups:
+        if args.verbose:
+            sys.stdout.write(m.format(groupId, siteId))
+        try:
+            send_digest(hostname, siteId, groupId, token)
+        except NotOk, no:
+            m = 'Error communicating with the server while sending the '\
+                'digest to the group {0} on the site {1}:\n{2}\n'
+            msg = m.format(siteId, groupId, no)
+            sys.stderr.write(msg)
 
     sys.exit(exit_vals['success'])
 
