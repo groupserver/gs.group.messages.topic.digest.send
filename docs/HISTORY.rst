@@ -1,6 +1,13 @@
 Changelog
 =========
 
+3.1.0 (2015-04-20)
+------------------
+
+* Added the ``--verbose`` (``-v``) flag
+* Following the split between getting the list of groups, and
+  sending a digest
+
 3.0.0 (2015-02-26)
 ------------------
 

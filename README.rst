@@ -32,7 +32,7 @@ Usage
 
 ::
 
-   senddigest [-h] [-c CONFIG] [-i INSTANCE] url
+   senddigest [-h] [-c CONFIG] [-i INSTANCE] [-v] url
 
 
 Positional Arguments
@@ -53,9 +53,13 @@ Optional Arguments
   that will be used to authenticate the script when it tries to
   send the digests.
 
-``-i INSTANCE``, ``--instance INSTANCE``
+``-i INSTANCE``, ``--instance INSTANCE``:
   The identifier of the GroupServer instance configuration to use
   (default "default").
+
+``-v``, ``--verbose``:
+  Provide verbose output. The default is to provide no output (no
+  news is good news).
 
 Returns
 -------
