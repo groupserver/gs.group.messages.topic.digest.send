@@ -13,13 +13,16 @@
 #
 ############################################################################
 # Standard libraries
-from __future__ import absolute_import, unicode_literals, print_function
+from __future__ import (absolute_import, unicode_literals, print_function,
+                        division)
 from argparse import ArgumentParser  # Standard in Python 2.7
 from httplib import OK as HTTP_OK
 from json import loads as load_json
 from operator import itemgetter
 import sys
 from urlparse import urlparse
+# Extra libraries
+from blessings import Terminal
 # GroupServer libraries
 from gs.config.config import Config, ConfigError
 from gs.form import post_multipart
@@ -100,6 +103,24 @@ def send_digest(hostname, siteId, groupId, token):
         raise NotOk(msg)
 
 
+def show_progress(siteId, groupId, curr, total):
+    t = Terminal()
+    # Write the site and group
+    if curr > 0 and t.does_styling:
+        # Clear the current line, and the line above
+        sys.stdout.write(t.move_up + t.move_x(0) + t.clear_eol)
+        sys.stdout.flush()
+    m = 'Sending digest to {0} on {1}\n'
+    sys.stdout.write(t.white(m.format(groupId, siteId)))
+    # Display progress
+    if t.does_styling:
+        p = int(((t.width - 2) * (curr / total)))
+        bar = '=' * (p + 1)
+        space = ' ' * (t.width - p - 3)
+        sys.stdout.write(t.bold('[' + bar + space + ']\n'))
+    sys.stdout.flush()
+
+
 def main(configFileName='etc/gsconfig.ini'):
     args = get_args(configFileName)
     try:
@@ -119,6 +140,7 @@ def main(configFileName='etc/gsconfig.ini'):
 
     if args.verbose:
         sys.stdout.write('Retrieving the list of groups\n')
+        sys.stdout.flush()
     try:
         groups = get_digest_groups(hostname, token)
     except NotOk as no:
@@ -128,10 +150,13 @@ def main(configFileName='etc/gsconfig.ini'):
         sys.stderr.write(msg)
         sys.exit(exit_vals['communication_failure'])
 
-    m = 'Sending digest to {0} on {1}\n'
-    for siteId, groupId in groups:
+    if args.verbose:
+        sys.stdout.write('Sending the digest to each group\n')
+    for i, info in enumerate(groups):
+        siteId, groupId = info
         if args.verbose:
-            sys.stdout.write(m.format(groupId, siteId))
+            show_progress(siteId, groupId, i, len(groups))
+
         try:
             send_digest(hostname, siteId, groupId, token)
         except NotOk, no:

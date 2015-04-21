@@ -28,6 +28,7 @@ with codecs.open(os.path.join("docs", "HISTORY.rst"),
 
 # The argparse library was added to core in Python 2.7
 core = ['setuptools',
+        'blessings',
         'gs.config',  # Note: without zope-support
         'gs.form', ]
 if sys.version_info > (2, 6):
