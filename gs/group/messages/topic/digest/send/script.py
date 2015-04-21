@@ -104,18 +104,22 @@ def send_digest(hostname, siteId, groupId, token):
 
 
 def show_progress(siteId, groupId, curr, total):
+    'Show a progress bar (if the terminal supports it) and a log of digests'
     t = Terminal()
     # Write the site and group
     if curr > 0 and t.does_styling:
-        # Clear the current line, and the line above
+        # Clear the line above (the progress bar)
         sys.stdout.write(t.move_up + t.move_x(0) + t.clear_eol)
         sys.stdout.flush()
     m = 'Sending digest to {0} on {1}\n'
     sys.stdout.write(t.white(m.format(groupId, siteId)))
     # Display progress
     if t.does_styling:
+        # Length of the bar = (width of term - the two brackets) * progress
         p = int(((t.width - 2) * (curr / total)))
-        bar = '=' * (p + 1)
+        bar = '=' * (p + 1)  # +1 because Python is 0-indexed
+        # Space at end = terminal width - bar width - brackets - 1
+        # (0-indexed)
         space = ' ' * (t.width - p - 3)
         sys.stdout.write(t.bold('[' + bar + space + ']\n'))
     sys.stdout.flush()
