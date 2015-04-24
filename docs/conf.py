@@ -60,7 +60,7 @@ author = u'GroupServer.org'
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-#sys.path.append(os.path.abspath('../'))
+sys.path.append(os.path.abspath('../'))
 from version import get_version
 # The full version, including alpha/beta/rc tags.
 release = get_version()
