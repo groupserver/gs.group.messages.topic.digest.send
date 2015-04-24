@@ -27,6 +27,8 @@ system such as ``cron``.
 Resources
 =========
 
+- Documentation:
+  https://groupserver.readthedocs.org/projects/gsgroupmessagestopicdigestsend/
 - Code repository:
   https://github.com/groupserver/gs.group.messages.topic.digest.send
 - Questions and comments to http://groupserver.org/groups/development

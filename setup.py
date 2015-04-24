@@ -66,6 +66,7 @@ setup(
     include_package_data=True,
     zip_safe=True,  # --=mpj17=-- Actually zip_safe
     install_requires=requires,
+    extras_require={'docs': ['Sphinx', ], },
     entry_points={
         'console_scripts': [
             'senddigest = gs.group.messages.topic.digest.send.script:main',
