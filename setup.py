@@ -64,7 +64,7 @@ setup(
                         'gs.group.messages.topic',
                         'gs.group.messages.topic.digest', ],
     include_package_data=True,
-    zip_safe=True,  # --=mpj17=-- Actually zip_safe
+    zip_safe=False,
     install_requires=requires,
     extras_require={'docs': ['Sphinx', ], },
     entry_points={
