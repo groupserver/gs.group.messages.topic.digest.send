@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2013, 2014 OnlineGroups.net and Contributors.
+# Copyright © 2013, 2014, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -31,7 +31,7 @@ from .errorvals import exit_vals
 
 
 class NotOk(Exception):
-    pass
+    '''Raised when a web-hook does not return a 200 status code'''
 
 
 def get_args(configFileName):
@@ -67,12 +67,19 @@ def get_token_from_config(configSet, configFileName):
         raise ValueError(m)
     return retval
 
-
+#: The URL of the web-hook that returns (as a JSON blob) the list of groups
+#: that need a digest.
 DIGEST_GROUPS_URI = '/gs-group-messages-topic-digest-groups.html'
 
 
 def get_digest_groups(hostname, token):
-    'Get the list of groups to send the digest to.'
+    '''Get the list of groups to send the digest to.
+
+:param str hostname: The name of the host to use.
+:param str token: The token to use for authentication.
+:raises NotOk: When the page does not return an HTTP 200 status code.
+:returns: A list of 2-tuples ``(siteId, groupId)``, sorted alphabetically
+:rtype: tuple'''
     fields = {'token': token, 'get': '', }
     status, reason, data = post_multipart(hostname, DIGEST_GROUPS_URI,
                                           fields)  # port?
@@ -86,10 +93,18 @@ def get_digest_groups(hostname, token):
     return retval
 
 
+#: The URL of the web-hook used to send a digest to a group
 SEND_DIGEST_URI = '/gs-group-messages-topic-digest-send.html'
 
 
 def send_digest(hostname, siteId, groupId, token):
+    '''Send a digest for a particular group
+
+:param str hostname: The name of the host to use.
+:param str siteId: The identifier for the site that contains the group.
+:param str groupId: The identifier for the group.
+:param str token: The token to use for authentication.
+:raises NotOk: When the page does not return an HTTP 200 status code.'''
     fields = {
         'form.siteId': siteId,
         'form.groupId': groupId,
@@ -104,7 +119,16 @@ def send_digest(hostname, siteId, groupId, token):
 
 
 def show_progress(siteId, groupId, curr, total):
-    'Show a progress bar (if the terminal supports it) and a log of digests'
+    '''Show the progress for sending the digest
+
+:param str siteId: The identifier for the site that contains the group.
+:param str groupId: The identifier for the group.
+:param int curr: The current index of the group.
+:param int total: The total number of groups.
+
+:func:`show_progress` displays the *verbose* feedback, including the name of
+the site and group. A progress bar is also displayed if the terminal
+supports it.'''
     t = Terminal()
     # Write the site and group
     if curr > 0 and t.does_styling:
