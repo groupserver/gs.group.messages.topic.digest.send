@@ -57,7 +57,7 @@ setup(
              'send, notification',
     author='Michael JasonSmith',
     author_email='mpj17@onlinegroups.net',
-    url='https://github.com/groupserver/gs.group.messages.digest.send',
+    url='https://github.com/groupserver/gs.group.messages.topic.digest.send',
     license='ZPL 2.1',
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages=['gs', 'gs.group', 'gs.group.messages',
