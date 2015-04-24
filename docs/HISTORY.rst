@@ -15,7 +15,7 @@ Changelog
 * Renaming the product `gs.group.messages.topic.digest.send`_ from
   ``gs.group.messages.senddigest``
 
-.. _gs.group.messages.digest.send:
+.. _gs.group.messages.topic.digest.send:
    https://github.com/groupserver/gs.group.messages.topic.digest.send
 
 2.1.0 (2014-03-26)
