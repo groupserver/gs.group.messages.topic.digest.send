@@ -82,7 +82,7 @@ def get_digest_groups(hostname, token):
 :rtype: tuple'''
     fields = {'token': token, 'get': '', }
     status, reason, data = post_multipart(hostname, DIGEST_GROUPS_URI,
-                                          fields)  # port?
+                                          fields)
     if status != HTTP_OK:
         m = '{reason} ({status} <{host}>)'
         msg = m.format(reason=reason, status=status, host=hostname)
@@ -111,7 +111,7 @@ def send_digest(hostname, siteId, groupId, token):
         'form.token': token,
         'form.actions.send': 'Send'}
     status, reason, data = post_multipart(hostname, SEND_DIGEST_URI,
-                                          fields)  # port?
+                                          fields)
     if status != HTTP_OK:
         m = '{reason} ({status} <{host}>)'
         msg = m.format(reason=reason, status=status, host=hostname)
